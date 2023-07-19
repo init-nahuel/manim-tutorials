@@ -35,6 +35,9 @@ class AnimatedAddNodeToLinkedList(Scene):
 
         # Show new node added
         self.wait(1)
+        self.play(Create(Text("addNode(9)", font_size=48, color=BLUE_D).shift(new_node_pos + DOWN)))
+        self.wait(1)
         self.play(Create(new_node), Create(
             Arrow(start=new_node.get_right(), end=new_node.get_right() + RIGHT*2)),
             Create(new_node_value))
+        self.wait(2)
