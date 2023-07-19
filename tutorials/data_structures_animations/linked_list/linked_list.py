@@ -17,6 +17,7 @@ class AnimatedAddNodeToLinkedList(Scene):
             node_values.append(text)
             arrows.append(Arrow(start=circle.get_right(),
                           end=circle.get_right() + RIGHT*2))
+        arrows.pop()
 
         nodes_animations = list(map(Create, nodes))
         node_values_animations = list(map(Create, node_values))
