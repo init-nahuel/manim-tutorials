@@ -2,23 +2,32 @@ from manim import *
 import numpy as np
 
 
-def create_ll_animation(coords: list[np.ndarray]) -> tuple[list[Mobject]]:
+def create_ll_animation(coords: list[np.ndarray], nodes_scale=1, text_scale=1, arrows_scale=1) -> tuple[list[Mobject]]:
     """Create the linked list mobjects and positioning on the given coordinates.
     Returns a tuple with each list containing the mobjects for nodes,
     node's value and arrows."""
 
     nodes: list[Mobject] = list()
-    arrows: list[Mobject] = list()
     node_values: list[Text] = list()
+    arrows: list[Mobject] = list()
+
+    if (len(coords) == 1):
+        nodes.append(Circle(color=WHITE).shift(coords[0]).scale(nodes_scale))
+        node_values.append(Text(str(abs(int(i[0])))).scale(text_scale))
+        return (nodes, node_values, arrow)
+
+    arrows_len = abs(coords[1] - coords[0]) - 2*np.array((nodes_scale, 0, 0))
 
     for i in coords:
-        text = Text(str(abs(int(i[0]))), font_size=48, color=BLUE_D).shift(i)
+        text = Text(str(abs(int(i[0]))), font_size=48,
+                    color=BLUE_D).shift(i).scale(text_scale)
         node_values.append(text)
 
-        node = Circle(color=WHITE).shift(i)
+        node = Circle(color=WHITE).shift(i).scale(nodes_scale)
         nodes.append(node)
 
-        arrow = Arrow(start=node.get_right(), end=node.get_right() + RIGHT*2)
+        arrow = Arrow(start=node.get_right(),
+                      end=node.get_right() + arrows_len).scale(arrows_scale)
         arrows.append(arrow)
 
     # deleting last arrow
