@@ -1,5 +1,29 @@
 from manim import *
+import numpy as np
 
+def create_ll_animation(coords: list[np.ndarray]) -> tuple[list[Mobject]]:
+    """Create the linked list mobjects and positioning on the given coordinates.
+    Returns a tuple with each list containing the mobjects for nodes,
+    node's value and arrows."""
+    
+    nodes: list[Mobject] = list()
+    arrows: list[Mobject] = list()
+    node_values: list[Text] = list()
+
+    for i in coords:
+        text = Text(str(abs(int(i[0]))), font_size=48, color=BLUE_D).shift(i)
+        node_values.append(text)
+        
+        node = Circle(color=WHITE).shift(i)
+        nodes.append(node)
+        
+        arrow = Arrow(start=node.get_right(), end=node.get_right() + RIGHT*2)
+        arrows.append(arrow)
+    
+    # deleting last arrow
+    arrows.pop()
+
+    return (nodes, node_values, arrows)
 
 class AnimatedAddNodeToLinkedList(Scene):
     def construct(self):
