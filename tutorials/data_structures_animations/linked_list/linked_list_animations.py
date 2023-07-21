@@ -2,6 +2,43 @@ from manim import *
 import numpy as np
 
 
+def create_nodes(coords: list[np.array], node_scale=1, text_scale=1, arrow_scale=1) -> VGroup:
+    """Create the nodes objects for the animation, this are composed by Circle and Text mobjects.
+    Returns a `VGroup` cointaining the items."""
+    
+    vgroup = VGroup()
+
+    if (len(coords) == 1): # Case one node -> arrow not req
+        pos = coords[0]
+        circle = Circle(color=WHITE).shift(pos).scale(node_scale)
+        value = Text(str(abs(int(pos[0]))), color=BLUE_D).shift(pos).scale(text_scale)
+        vgroup.add(circle, value)
+        return vgroup
+    
+    # Adding first node to group
+    prev_coord = coords[0]
+    circle = Circle(color=WHITE).shift(prev_coord).scale(node_scale)
+    value = Text(str(abs(int(prev_coord[0]))), color=BLUE_D).shift(prev_coord).scale(text_scale)
+    vgroup.add(circle, value)
+
+    for c in coords[1:]:
+        arrow_len = abs(c - prev_coord) - 2*np.array((node_scale, 0, 0))
+        arrow = Arrow(start=circle.get_right(), end=circle.get_right()+arrow_len).scale(arrow_scale)
+        circle = Circle(color=WHITE).shift(c).scale(node_scale)
+        value = Text(str(abs(int(c[0]))), color=BLUE_D).shift(c).scale(text_scale)
+        prev_coord = c
+        vgroup.add(circle, value, arrow)
+    
+    return vgroup
+
+class Test(Scene):
+    def construct(self):
+        coords = [(0, 0, 0), (3, 0, 0), (6, 0, 0), (9, 0, 0)]
+        coords = list(map(np.array, coords))
+        vgroup = create_nodes(coords, node_scale=0.8)
+        self.play(Create(vgroup, lag_ratio=0))
+
+
 def create_ll_animation(coords: list[np.ndarray], nodes_scale=1, text_scale=1, arrows_scale=1) -> tuple[list[Circle], list[Text], list[Arrow]]:
     """Create the linked list mobjects and positioning on the given coordinates.
     Returns a tuple with each list containing the mobjects for nodes,
