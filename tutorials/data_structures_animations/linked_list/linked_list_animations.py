@@ -56,3 +56,32 @@ class AnimatedAddNode(Scene):
         self.wait(1)
         self.play(Create(new_node_vgroup, lag_ratio=0), Create(new_arrow))
         self.wait(2)
+
+class AnimatedRemoveNode(Scene):
+    def construct(self):
+        coords = [(-6, 0, 0), (-3, 0, 0), (0, 0, 0), (3, 0, 0), (6, 0, 0)]
+        coords = list(map(np.array, coords))
+        ll_vgroup = create_ll(coords, node_scale=0.8)
+
+        # Show linked list before removing operation
+        self.play(Create(ll_vgroup, lag_ratio=0))
+        
+        # Show operation's name: removeNode(0)
+        txt = Text("removeNode(0)", font_size=48, color=BLUE_D).shift(DOWN*3)
+        self.play(Create(txt))
+
+        # Show pointer for guiding operation
+        ptr = Arrow(start=DOWN*2, end=DOWN, color=YELLOW).scale(1.5).shift(coords[0])
+        self.play(Create(ptr))
+        
+
+        target = np.array((0, 0, 0))
+        shift = np.array((3, 0, 0))
+        for c in coords[1:]:
+            if np.array_equal(target, c):
+                self.wait(1)
+                self.play(ptr.animate.shift(shift))
+                self.wait(1)
+                break
+            self.wait(1)
+            self.play(ptr.animate.shift(shift))
