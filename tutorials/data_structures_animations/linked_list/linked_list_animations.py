@@ -2,9 +2,10 @@ from manim import *
 import numpy as np
 
 
-def create_nodes(coords: list[np.array], node_scale=1, text_scale=1, arrow_scale=1) -> VGroup:
-    """Create the nodes objects for the animation, this are composed by Circle and Text mobjects.
-    Returns a `VGroup` cointaining the items."""
+def create_ll(coords: list[np.array], node_scale=1, text_scale=1, arrow_scale=1) -> VGroup:
+    """Create a linked list composed of mobjects (`Circle`, `Text` and `Arrow`) for the animation, it links
+    the nodes sequentially. Returns a `VGroup` containing the mobjects.
+    """
     
     vgroup = VGroup()
 
@@ -35,7 +36,7 @@ class Test(Scene):
     def construct(self):
         coords = [(0, 0, 0), (3, 0, 0), (6, 0, 0), (9, 0, 0)]
         coords = list(map(np.array, coords))
-        vgroup = create_nodes(coords, node_scale=0.8)
+        vgroup = create_ll(coords, node_scale=0.8)
         self.play(Create(vgroup, lag_ratio=0))
 
 
