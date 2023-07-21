@@ -59,29 +59,42 @@ class AnimatedAddNode(Scene):
 
 class AnimatedRemoveNode(Scene):
     def construct(self):
-        coords = [(-6, 0, 0), (-3, 0, 0), (0, 0, 0), (3, 0, 0), (6, 0, 0)]
-        coords = list(map(np.array, coords))
-        ll_vgroup = create_ll(coords, node_scale=0.8)
+        part1_coords = [(-6, 0, 0), (-3, 0, 0)]
+        part1_coords = list(map(np.array, part1_coords))
+        ll_part1 = create_ll(part1_coords, node_scale=0.8)
+
+        part2_coords = [(3, 0, 0), (6, 0, 0)]
+        part2_coords = list(map(np.array, part2_coords))
+        ll_part2 = create_ll(part2_coords, node_scale=0.8)
+
+        target_node_coord = np.array((0, 0, 0))
+        arrow_len = abs(part1_coords[1]) - 2 * \
+            np.array((0.8, 0, 0))
+        target_node = create_ll([target_node_coord], node_scale=0.8)
+        prev_link = Arrow(start=np.array((-2.2, 0, 0)), end=np.array((-2.2, 0, 0)) + arrow_len)
+        next_link = Arrow(start=target_node.get_right(), end=target_node.get_right() + arrow_len)
 
         # Show linked list before removing operation
-        self.play(Create(ll_vgroup, lag_ratio=0))
+        self.play(Create(ll_part1, lag_ratio=0),
+                Create(ll_part2, lag_ratio=0),
+                Create(prev_link),
+                Create(target_node, lag_ratio=0),
+                Create(next_link))
+        self.wait(1)
         
         # Show operation's name: removeNode(0)
         txt = Text("removeNode(0)", font_size=48, color=BLUE_D).shift(DOWN*3)
         self.play(Create(txt))
+        self.wait(1)
 
-        # Show pointer for guiding operation
-        ptr = Arrow(start=DOWN*2, end=DOWN, color=YELLOW).scale(1.5).shift(coords[0])
-        self.play(Create(ptr))
-        
+        # Remove node 
+        self.play(FadeOut(target_node, next_link))
+        self.wait(1)
 
-        target = np.array((0, 0, 0))
-        shift = np.array((3, 0, 0))
-        for c in coords[1:]:
-            if np.array_equal(target, c):
-                self.wait(1)
-                self.play(ptr.animate.shift(shift))
-                self.wait(1)
-                break
-            self.wait(1)
-            self.play(ptr.animate.shift(shift))
+        # Link previous node to next
+        self.play(prev_link.animate.shift(RIGHT*1.6).scale(np.array((3.5, 0, 0))))
+        self.wait(1)
+
+        # Resize arrow to original scale
+        self.play(ll_part1.animate.shift(RIGHT*3), prev_link.animate.shift(RIGHT*1.4).scale(0.3))
+        self.wait(2)
