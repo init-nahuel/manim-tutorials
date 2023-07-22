@@ -83,9 +83,18 @@ class AnimatedRemoveNode(Scene):
         self.wait(1)
         
         # Show operation's name: removeNode(0)
-        txt = Text("removeNode(0)", font_size=48, color=BLUE_D).shift(DOWN*3)
+        txt = Text("removeNode(0)", font_size=48, color=BLUE_D).shift(DOWN*2)
         self.play(Create(txt))
         self.wait(1)
+
+        # Search target node
+        ptr = Arrow(start=part1_coords[0] + UP*3, end=part1_coords[0] + UP, color=ORANGE)
+        self.play(Create(ptr))
+        self.wait(1)
+        self.play(ptr.animate.shift(RIGHT*3))
+        self.wait(1)
+        self.play(ptr.animate.shift(RIGHT*3))
+        self.play(FadeOut(ptr))
 
         # Remove node 
         self.play(FadeOut(target_node, next_link))
